@@ -1,0 +1,85 @@
+ATFStructure {
+
+amp (an ampersand)
+    = "&"
+
+at (an at sign)
+   = "@"
+
+pCode (a P-Code)
+    = "P" digit digit digit digit digit digit
+
+lineTerminator
+    = "\r\n"
+    | "\n"
+
+nonLineTerminator (a character that is not a newline)
+    = ~lineTerminator any
+
+
+atObject
+    = "tablet"
+    | "envelope"
+    | "bulla"
+    | "prism"
+    | atObjectFragment
+    | atObjectSeal
+    | atObjectGeneric
+
+atObjectFragment
+    = "fragment" space+ letter
+
+atObjectSeal
+    = "object" space+ "seal"
+
+atObjectGeneric
+    = "object" space+ nonLineTerminator+
+
+atObjectSurfaceGeneric
+    = "surface" space+ nonLineTerminator+
+
+atObjectFaceGeneric
+    = "face" space+ letter
+
+atObjectSurface
+    = "obverse"
+    | "reverse"
+    | "left"
+    | "right"
+    | "top"
+    | "bottom"
+    | atObjectSurfaceGeneric
+    | atObjectFaceGeneric
+
+AmpLine (an Amp Line)
+    = #(amp pCode) "=" nonLineTerminator+ lineTerminator
+
+AtObjectLine (an At Line, representing an object, surface, or other control)
+    = #(at atObject) lineTerminator
+
+AtLine
+    = AtObjectLine
+
+Line (any kind of Line)
+    = AmpLine
+    | AtLine
+    | lineTerminator
+
+Lines (a collection of one or more lines)
+    = Line Line --multiLine
+    | Line --singleLine
+
+
+// Basic whitespace and line termination handling.
+    // Note that we override the default Ohm definition
+    // of `space` to only be spaces or tabs, and NOT
+    // any of the newline characters
+    space := whitespace
+    whitespace
+      = "\t"
+      | "\x0B"    -- verticalTab
+      | "\x0C"    -- formFeed
+      | " "
+      | "\u00A0"  -- noBreakSpace
+      | "\uFEFF"  -- byteOrderMark
+}
