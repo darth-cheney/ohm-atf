@@ -6,6 +6,9 @@ amp (an ampersand)
 at (an at sign)
    = "@"
 
+dollar (a dollar sign)
+   = "$"
+
 pCode (a P-Code)
     = "P" digit digit digit digit digit digit
 
@@ -15,6 +18,12 @@ lineTerminator
 
 nonLineTerminator (a character that is not a newline)
     = ~lineTerminator any
+
+integer
+    = digit+
+
+integerRange
+    = integer "-" integer
 
 
 atObject
@@ -51,23 +60,124 @@ atObjectSurface
     | atObjectSurfaceGeneric
     | atObjectFaceGeneric
 
+atObjectHeading
+    = "h" digit
+
+discourseShortcut
+    = "colophon"
+    | "date"
+    | "catchline"
+    | "signatures"
+    | "signature"
+    | "summary"
+    | "witnesses"
+
+dollarQualification (a dollar line qualification state word)
+    = "at least"
+    | "at most"
+    | "about"
+
+dollarExtent (a dollar line extent state word)
+    = "n"
+    | "several"
+    | "some"
+    | integer
+    | integerRange
+    | "rest of"
+    | "start of"
+    | "beginning of"
+    | "middle of"
+    | "end of"
+
+dollarScope (a dollar line scope state word)
+    = atObject
+    | atObjectSurface
+    | "columns"
+    | "column"
+    | "lines"
+    | "line"
+    | "cases"
+    | "case"
+    | "surface"
+
+dollarState (a dollar line state's state word)
+    = "blank"
+    | "broken"
+    | "effaced"
+    | "illegible"
+    | "missing"
+    | "traces"
+
+dollarRuling (a dollar ruling numeric word)
+    = "single"
+    | "double"
+    | "triple"
+    | "quadruple"
+
+textLineBeginning (the beginning of an ATF text line)
+    = ~space ~"." any
+
 AmpLine (an Amp Line)
     = #(amp pCode) "=" nonLineTerminator+ lineTerminator
 
-AtObjectLine (an At Line, representing an object, surface, or other control)
+AtObjectLine (an At Line, representing an object, such as a tablet or bulla)
     = #(at atObject) lineTerminator
+
+AtSurfaceLine (an At Line, representing a given surface of an object, such as reverse, top, etc)
+    = #(at atObjectSurface) lineTerminator
+
+AtHeadingLine (an At Line, representing a heading like h3 etc)
+    = #(at atObjectHeading) lineTerminator
+
+AtDivisionLine (an At Line representing some division of the document)
+    = #(at "m=" letter+) (letter+ digit+)? lineTerminator
+
+AtDiscourseLine (an At Line representing a shorthand discursive division, like colophon etc)
+    = #(at discourseShortcut) lineTerminator
+
+AtMilestoneLine (an At Line representing a Division or Discourse specification)
+    = AtDivisionLine
+    | AtDiscourseLine
+
+DollarLineStrict (a Dollar Line following the "strict" conventions describing its state)
+    = #(dollar space+) dollarQualification? dollarExtent dollarScope dollarState lineTerminator
+
+DollarSealLine (a Dollar Line referring to a specified seal number)
+    = #(dollar space+) "seal" integer lineTerminator
+
+DollarRulingLine
+    = #(dollar space+) dollarRuling "ruling" lineTerminator
+
+DollarLineLoose
+    = #(dollar space+) "(" ~")" nonLineTerminator+ ")"
+
+DollarLine (a line beginning with a dollar sign that indicates something about the state of the text)
+    = DollarSealLine
+    | DollarRulingLine
+    | DollarLineStrict
+    | DollarLineLoose
 
 AtLine
     = AtObjectLine
+    | AtHeadingLine
+    | AtSurfaceLine
+
+TextLine
+    = #(textLineBeginning+ "." space) nonLineTerminator+ lineTerminator
 
 Line (any kind of Line)
     = AmpLine
     | AtLine
+    | DollarLine
+    | TextLine
     | lineTerminator
 
 Lines (a collection of one or more lines)
     = Line Line --multiLine
     | Line --singleLine
+
+Document (an ATF document)
+    = Line+ end
 
 
 // Basic whitespace and line termination handling.
