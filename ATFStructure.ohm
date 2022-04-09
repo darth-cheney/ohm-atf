@@ -9,6 +9,9 @@ at (an at sign)
 dollar (a dollar sign)
    = "$"
 
+hash (a hash sign)
+   = "#"
+
 pCode (a P-Code)
     = "P" digit digit digit digit digit digit
 
@@ -45,6 +48,12 @@ atfProtocolLanguage (a protocol code for a valid ATF language)
 	| "sux-x-emesal"
 	| "sux-x-syllabic"
 	| "sux-x-udgalnun"
+
+atfFeature (a procotol feature for ATF hash lines)
+    = ~lineTerminator any+
+
+atfProtocolToken (a token introducing an ATF protocol, a word followed by a colon)
+    = letter+ ":"
 
 atObject
     = "tablet"
@@ -145,12 +154,56 @@ textLineBeginning (the beginning of an ATF text line)
 // Hash Lines
 
 BasketProtocolLine (a basket protocol line)
-    = #("basket: ") nonLineTerminator+ lineTerminator
+    = #("#basket: ") nonLineTerminator+ lineTerminator
 
 ATFProtocolLine (an ATF protocol line for introducing directives)
     = #("#atf: ") "lang" atfProtocolLanguage lineTerminator --atfLangDirective
-    //| #("#atf: ") "use" atfFeature lineTerminator --atfFeatureDirective
+    | #("#atf: ") "use" atfFeature lineTerminator --atfFeatureDirective
 
+BibProtocolLine (a bibliographic protocol hash line)
+    = #("#bib: ") nonLineTerminator+ lineTerminator
+
+LemLineProtocolLine (a lemmatization for the previous line)
+    = #("#lem: ") nonLineTerminator+ lineTerminator
+
+LemmatizerProtocolLine (introduces directives to the lemmatization subsystem)
+    = #("#lemmatizer: ") nonLineTerminator+ lineTerminator
+
+LinkProtocolLine (a directive to the linkage subsystem)
+    = #("#link: def ") nonLineTerminator+ lineTerminator
+
+NoteProtocolLine (a note that will be included in rendered ATF text)
+    = #("#note: ") nonLineTerminator+ lineTerminator
+
+HashOuterProtocolLine (a protocol line that may appear at the very beginning of a document)
+    = BasketProtocolLine
+
+HashStartProtocolLine (a protocol line that may occur at the start of a text)
+    = ATFProtocolLine
+    | BibProtocolLine
+    | LinkProtocolLine
+    //| VersionProtocolLine (not yet implemented)
+
+HashAfterProtocolLine (a protocol line that should appear only after other protocols have been declared)
+    = NoteProtocolLine
+
+HashInterProtocolLine (a protocol line that may appear between lines of text)
+    = BibProtocolLine
+    | LemLineProtocolLine
+    | NoteProtocolLine
+    //| VarProtocolLine (not yet implemented)
+
+// todo: add var:, version:, and syntax:
+
+HashCommentLine (a hash line comment line)
+    = #( hash (~atfProtocolToken nonLineTerminator)+) lineTerminator
+
+HashLine
+    = HashOuterProtocolLine
+    | HashStartProtocolLine
+    | HashAfterProtocolLine
+    | HashInterProtocolLine
+    | HashCommentLine
 
 AmpLine (an Amp Line)
     = #(amp pCode) "=" nonLineTerminator+ lineTerminator

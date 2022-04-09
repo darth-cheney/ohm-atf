@@ -170,5 +170,17 @@ describe("Hash Line Tests", () => {
                 });
             });
         });
+        describe("Hash comment line tests", () => {
+            it("Can parse a comment line as such", () => {
+                let input = `#this is some kind of comment\n`;
+                let match = grammar.match(input, "HashCommentLine");
+                assert.isTrue(match.succeeded());
+            });
+            it("Does not parse other protocol command lines as comment lines", () => {
+                let input = `#atf: lang ${protocolLanguages[1]}\n`;
+                let match = grammar.match(input, "HashCommentLine");
+                assert.isFalse(match.succeeded());
+            });
+        });
     });
 });
