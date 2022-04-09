@@ -26,24 +26,25 @@ integerRange
     = integer "-" integer
 
 atfProtocolLanguage (a protocol code for a valid ATF language)
-    = akk-x-oldakk
-	| ua
-	| akk-x-oldass
-	| akk-x-oldbab
-	| akk-x-obperi
-	| akk-x-midass
-	| akk-x-midbab
-	| akk-x-mbperi
-	| akk-x-neoass
-	| akk-x-neobab
-	| akk-x-ltebab
-	| akk-x-stdbab
-	| akk-x-conakk
-	| hit
-	| sux or sux-x-emegir
-	| sux-x-emesal
-	| sux-x-syllabic
-	| sux-x-udgalnun
+    = "akk-x-oldakk"
+	| "ua"
+    | "akk-x-earakk"
+	| "akk-x-oldass"
+	| "akk-x-oldbab"
+	| "akk-x-obperi"
+	| "akk-x-midass"
+	| "akk-x-midbab"
+	| "akk-x-mbperi"
+	| "akk-x-neoass"
+	| "akk-x-neobab"
+	| "akk-x-ltebab"
+	| "akk-x-stdbab"
+	| "akk-x-conakk"
+	| "hit"
+	| "sux or sux-x-emegir"
+	| "sux-x-emesal"
+	| "sux-x-syllabic"
+	| "sux-x-udgalnun"
 
 atObject
     = "tablet"
@@ -147,8 +148,8 @@ BasketProtocolLine (a basket protocol line)
     = #("basket: ") nonLineTerminator+ lineTerminator
 
 ATFProtocolLine (an ATF protocol line for introducing directives)
-    = #("atf: ") "lang" atfProtocolLanguage lineTerminator --atfLangDirective
-    | #("atf: ") "use" atfFeature lineTerminator --atfFeatureDirective
+    = #("#atf: ") "lang" atfProtocolLanguage lineTerminator --atfLangDirective
+    //| #("#atf: ") "use" atfFeature lineTerminator --atfFeatureDirective
 
 
 AmpLine (an Amp Line)

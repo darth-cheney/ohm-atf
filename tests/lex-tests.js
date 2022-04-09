@@ -7,6 +7,8 @@ const grammar = ohm.grammar(fs.readFileSync("./ATFStructure.ohm"));
 import chai from "chai";
 const assert = chai.assert;
 
+const protocolLanguages = ["akk-x-earakk", "akk-x-oldakk", "ua", "akk-x-oldass", "akk-x-oldbab", "akk-x-obperi", "akk-x-midass", "akk-x-midbab", "akk-x-mbperi", "akk-x-neoass", "akk-x-neobab", "akk-x-ltebab", "akk-x-stdbab", "akk-x-conakk", "hit", "sux or sux-x-emegir", "sux-x-emesal", "sux-x-syllabic", "sux-x-udgalnun"];
+
 describe("Initial test", () => {
     it("Should have loaded a grammar", () => {
         assert.isNotEmpty(grammar);
@@ -152,6 +154,20 @@ describe("At-Line Tests", () =>{
                 let input = `@${name}\n`;
                 let match = grammar.match(input, "AtDiscourseLine");
                 assert.isTrue(match.succeeded());
+            });
+        });
+    });
+});
+
+describe("Hash Line Tests", () => {
+    describe("Protocol Line Tests", () => {
+        describe("atf protocol lang tests", () => {
+            protocolLanguages.forEach(langName => {
+                it(`Parses language protocol for ${langName}`, () => {
+                    let input = `#atf: lang ${langName}\n`;
+                    let match = grammar.match(input, "ATFProtocolLine");
+                    assert.isTrue(match.succeeded());
+                });
             });
         });
     });
