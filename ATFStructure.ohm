@@ -44,10 +44,11 @@ atfProtocolLanguage (a protocol code for a valid ATF language)
 	| "akk-x-stdbab"
 	| "akk-x-conakk"
 	| "hit"
-	| "sux or sux-x-emegir"
+    | "sux-x-emegir"
 	| "sux-x-emesal"
 	| "sux-x-syllabic"
 	| "sux-x-udgalnun"
+    | "sux"
 
 atfFeature (a procotol feature for ATF hash lines)
     = ~lineTerminator any+
@@ -152,6 +153,8 @@ textLineBeginning (the beginning of an ATF text line)
 // Semantic Rules
 
 // Hash Lines
+TranslationProtocolLine
+    = #(hash "tr." letter+ ":" space+) nonLineTerminator+ lineTerminator
 
 BasketProtocolLine (a basket protocol line)
     = #("#basket: ") nonLineTerminator+ lineTerminator
@@ -182,6 +185,7 @@ HashStartProtocolLine (a protocol line that may occur at the start of a text)
     = ATFProtocolLine
     | BibProtocolLine
     | LinkProtocolLine
+    | TranslationProtocolLine
     //| VersionProtocolLine (not yet implemented)
 
 HashAfterProtocolLine (a protocol line that should appear only after other protocols have been declared)
@@ -191,6 +195,7 @@ HashInterProtocolLine (a protocol line that may appear between lines of text)
     = BibProtocolLine
     | LemLineProtocolLine
     | NoteProtocolLine
+    | TranslationProtocolLine
     //| VarProtocolLine (not yet implemented)
 
 // todo: add var:, version:, and syntax:
@@ -227,8 +232,11 @@ AtMilestoneLine (an At Line representing a Division or Discourse specification)
     = AtDivisionLine
     | AtDiscourseLine
 
+AtColumnLine (An At Line indicating the column number being transliterated)
+    = #(at "column" space+) integer
+
 DollarLineStrict (a Dollar Line following the "strict" conventions describing its state)
-    = #(dollar space+) dollarQualification? dollarExtent dollarScope dollarState lineTerminator
+    = #(dollar space+) dollarQualification? dollarExtent? dollarScope? dollarState nonLineTerminator* lineTerminator
 
 DollarSealLine (a Dollar Line referring to a specified seal number)
     = #(dollar space+) "seal" integer lineTerminator
@@ -249,6 +257,7 @@ AtLine
     = AtObjectLine
     | AtHeadingLine
     | AtSurfaceLine
+    | AtColumnLine
 
 TextLine
     = #(textLineBeginning+ "." space) nonLineTerminator+ lineTerminator
@@ -280,4 +289,27 @@ Document (an ATF document)
       | " "
       | "\u00A0"  -- noBreakSpace
       | "\uFEFF"  -- byteOrderMark
+
+
+// TEMP!
+// Copying basic document structure from the NE grammar
+// in the JTF repo for now
+Main
+    = Outer? Start Inter+ After? end
+
+Outer
+    = HashOuterProtocolLine
+
+Start
+    = AmpLine HashStartProtocolLine*
+
+Inter
+    = TextLine
+    | AtLine
+    | HashInterProtocolLine
+    | DollarLine
+
+After
+    = HashAfterProtocolLine
 }
+
