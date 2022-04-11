@@ -154,7 +154,7 @@ textLineBeginning (the beginning of an ATF text line)
 
 // Hash Lines
 TranslationProtocolLine
-    = #(hash "tr." letter+ ":" space+) nonLineTerminator+ lineTerminator
+    = #(hash "tr." letter+ ":" space+) nonLineTerminator* lineTerminator
 
 BasketProtocolLine (a basket protocol line)
     = #("#basket: ") nonLineTerminator+ lineTerminator
@@ -233,7 +233,7 @@ AtMilestoneLine (an At Line representing a Division or Discourse specification)
     | AtDiscourseLine
 
 AtColumnLine (An At Line indicating the column number being transliterated)
-    = #(at "column" space+) integer
+    = #(at "column" space+) integer lineTerminator
 
 DollarLineStrict (a Dollar Line following the "strict" conventions describing its state)
     = #(dollar space+) dollarQualification? dollarExtent? dollarScope? dollarState nonLineTerminator* lineTerminator
