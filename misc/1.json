@@ -1,0 +1,72 @@
+{
+    "reference": "",
+    "success": true,
+    "errors": [],
+    "warnings": [],
+    "atf": "&P123456 = OIP 115, 164\n#atf: lang sux\n@tablet\n@obverse\n2. mu-kux(DU)\n",
+    "meta": {
+        "name": "OIP 115, 164",
+        "p_number": "P123456"
+    },
+    "objects": [
+        {
+            "_class": "object",
+            "type": "tablet",
+            "children": [
+                {
+                    "_class": "surface",
+                    "type": "obverse",
+                    "children": [
+                        {
+                            "_class": "line",
+                            "name": "2",
+                            "children": [
+                                {
+                                    "_class": "sequence",
+                                    "type": "long",
+                                    "children": [
+                                        {
+                                            "_class": "chr",
+                                            "type": "syl",
+                                            "value": "mu",
+                                            "id": "P123456__0_0_0_0_0"
+                                        },
+                                        {
+                                            "_class": "chr",
+                                            "type": "syl",
+                                            "value": "ku",
+                                            "index": "x",
+                                            "reference": {
+                                                "_class": "chr",
+                                                "value": "du"
+                                            },
+                                            "id": "P123456__0_0_0_0_1"
+                                        }
+                                    ],
+                                    "id": "P123456__0_0_0_0"
+                                }
+                            ],
+                            "toLine": 5,
+                            "id": "P123456__0_0_0"
+                        }
+                    ],
+                    "id": "P123456__0_0"
+                }
+            ],
+            "id": "P123456__0"
+        }
+    ],
+    "start": [
+        {
+            "_class": "ampStatement",
+            "p_number": "P123456",
+            "name": "OIP 115, 164"
+        },
+        {
+            "_class": "protocol.start",
+            "type": "atf",
+            "value": "lang sux"
+        }
+    ],
+    "after": []
+}

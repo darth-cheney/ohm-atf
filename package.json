@@ -3,6 +3,7 @@
     "dependencies": {
         "chai": "^4.3.6",
         "esm": "^3.2.25",
+        "jtf-lib": "github:cdli-gh/jtf-lib",
         "mocha": "^9.2.2",
         "ohm-js": "^16.3.2"
     }

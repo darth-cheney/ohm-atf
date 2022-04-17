@@ -7,7 +7,7 @@ const grammar = ohm.grammar(fs.readFileSync("./ATFStructure.ohm"));
 import chai from "chai";
 const assert = chai.assert;
 
-const protocolLanguages = ["akk-x-earakk", "akk-x-oldakk", "ua", "akk-x-oldass", "akk-x-oldbab", "akk-x-obperi", "akk-x-midass", "akk-x-midbab", "akk-x-mbperi", "akk-x-neoass", "akk-x-neobab", "akk-x-ltebab", "akk-x-stdbab", "akk-x-conakk", "hit", "sux or sux-x-emegir", "sux-x-emesal", "sux-x-syllabic", "sux-x-udgalnun"];
+const protocolLanguages = ["akk-x-earakk", "akk-x-oldakk", "ua", "akk-x-oldass", "akk-x-oldbab", "akk-x-obperi", "akk-x-midass", "akk-x-midbab", "akk-x-mbperi", "akk-x-neoass", "akk-x-neobab", "akk-x-ltebab", "akk-x-stdbab", "akk-x-conakk", "hit", "sux-x-emegir", "sux-x-emesal", "sux-x-syllabic", "sux-x-udgalnun"];
 
 describe("Initial test", () => {
     it("Should have loaded a grammar", () => {

@@ -160,8 +160,8 @@ BasketProtocolLine (a basket protocol line)
     = #("#basket: ") nonLineTerminator+ lineTerminator
 
 ATFProtocolLine (an ATF protocol line for introducing directives)
-    = #("#atf: ") "lang" atfProtocolLanguage lineTerminator --atfLangDirective
-    | #("#atf: ") "use" atfFeature lineTerminator --atfFeatureDirective
+    = #("#atf: ") "lang" atfProtocolLanguage lineTerminator //--atfLangDirective
+    | #("#atf: ") "use" atfFeature lineTerminator //--atfFeatureDirective
 
 BibProtocolLine (a bibliographic protocol hash line)
     = #("#bib: ") nonLineTerminator+ lineTerminator
@@ -304,10 +304,10 @@ Start
     = AmpLine HashStartProtocolLine*
 
 Inter
-    = TextLine
-    | AtLine
+    = AtLine
     | HashInterProtocolLine
     | DollarLine
+    | TextLine
 
 After
     = HashAfterProtocolLine
