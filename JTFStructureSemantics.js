@@ -30,7 +30,12 @@ const semantics = {
     },
 
     TextLine: function(beginning, dot, space, otherText, newline){
-        return this.sourceString;
+        return {
+            _class: "line",
+            name: beginning.sourceString,
+            children: [],
+            content: otherText.sourceString
+        };
     },
 
     HashStartProtocolLine: function(line){
@@ -55,6 +60,14 @@ const semantics = {
         return {
             _class: "object",
             type: objectName.sourceString,
+            children: []
+        };
+    },
+
+    AtSurfaceLine: function(atSign, surfaceName, newline){
+        return {
+            _class: "surface",
+            type: surfaceName.sourceString,
             children: []
         };
     },
