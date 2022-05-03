@@ -1,0 +1,177 @@
+ATFInline {
+    lowercaseVowel
+        = "a"
+        | "e"
+        | "i"
+        | "u"
+
+    uppercaseVowel
+        = "A"
+        | "E"
+        | "I"
+        | "U"
+
+    aleph
+        = "ʾ"
+        | "'"
+
+    cdliSpecialLowercase
+        = "sz"
+        | "ts"
+        | "s,"
+        | "t,"
+
+    cdliSpecialUppercase
+        = "SZ",
+        | "TS"
+        | "S,"
+        | "T,"
+
+    lowercaseConsonant
+        = "b"
+        | "d"
+        | "g"
+        | "ḫ"
+        | "h"
+        | "k"
+        | "l"
+        | "m"
+        | "n"
+        | "p"
+        | "q"
+        | "r"
+        | "s"
+        | "ṣ"
+        | "š"
+        | "ś"
+        | "t"
+        | "ṭ"
+        | "w"
+        | "y"
+        | "z"
+
+    uppercaseConsonant
+        = "B"
+        | "D"
+        | "G"
+        | "Ḫ"
+        | "H"
+        | "K"
+        | "L"
+        | "M"
+        | "N"
+        | "P"
+        | "Q"
+        | "R"
+        | "S"
+        | "Ṣ"
+        | "Š"
+        | "Ś"
+        | "T"
+        | "Ṭ"
+        | "W"
+        | "Y"
+        | "Z"
+        | "Ŋ"
+
+    uppercaseCharacter
+        = uppercaseVowel | cdliSpecialUppercase  | uppercaseConsonant | aleph
+    lowercaseCharacter
+        = lowercaseVowel | cdliSpecialLowercase | lowercaseConsonant | aleph
+
+    elementalUppercaseConsonant
+        = cdliSpecialUppercase | uppercaseConsonant | aleph
+
+    elementalLowercaseConsonant
+        = cdliLowercaseConsonant | lowercaseConsonant | aleph
+
+    openBracket
+        = "["
+    closedBracket
+        = "]"
+
+
+    // The following is taken straight from JTF
+    valueSymbolPrefix
+        = "d" | "m" | "f" | "p" | aleph | "I"
+
+    nonValueSymbol
+        = uppercaseCharacter | lowercaseCharacter
+
+    valueSymbolSolo
+        = valueSymbolPrefix nonValueSymbol
+
+    bracketedUppercaseConsonant
+        = openBracket elementalUppercaseConsonant closedBracket
+
+    bracketedLowercaseConsonant
+        = openBracket elementalLowercaseConsonant closedBracket
+
+    plainLowercaseValue
+        = (bracketedLowercaseConsonant? lowercaseVowel)+
+        | (valueSymbolSolo nonValueSymbol)
+
+    plainUppercaseVaue
+        = (bracketedUppercaseConsonant? uppercaseVowel)+
+        | nonValueSymbol
+    // End JTF transcribed simple values
+
+
+    // The following token definitions are taken from
+    // JTF, with some name modifications
+    subscriptDigit
+        = "₀"|"₁"|"₂"|"₃"|"₄"|"₅"|"₆"|"₇"|"₈"|"₉"
+
+    fraction
+        = "1/2" | "1/3" | "1/4" | "2/3" | "5/6" | "1/8"
+
+    numericTokens
+        = fraction
+        | subscriptDigit*
+        | digit*
+
+    numericEllipsesLowerToken
+        = "n" nonValueSymbol
+    numericEllipsesUpperToken
+        = "N" nonValueSymbol
+    numericEllipsesPlhdPlusToken
+        = ("n" | "N") "+" digit* nonValueSymbol
+    // End numeric tokens from JTF
+
+    // Glosses definitions taken from JTF,
+    // with some name modifications
+    linguisticGlossOpen
+        = "{{"
+    linguisticGlossClosed
+        = "}}"
+    documentGlossOpen
+        = "{("
+    documentGlossClosed
+        = ")}"
+        
+    // The grapheme is present but must be
+    // excised for the correct meaning
+    presenceExciseGlossOpen
+        = "<<"
+    presenceExciseGlossClosed
+        = ">>"
+
+    afterBoundaryGlossOpen
+        = "<("
+    afterBoundaryGlossClosed
+        = ")>"
+    afterGraphemeGlossOpen
+        = "<("
+    afterGraphemeGlossClosed
+        = ")>"
+
+    // The graphemes must be supplied for
+    // the meaning but are not present
+    presenceNeededGlossOpen
+        = "<"
+    presenceNeededGlossClosed
+        = ">"
+    
+
+
+}
