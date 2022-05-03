@@ -15,6 +15,9 @@ ATFInline {
         = "ʾ"
         | "'"
 
+    timesChar
+        = "×"
+
     cdliSpecialLowercase
         = "sz"
         | "ts"
@@ -22,7 +25,7 @@ ATFInline {
         | "t,"
 
     cdliSpecialUppercase
-        = "SZ",
+        = "SZ"
         | "TS"
         | "S,"
         | "T,"
@@ -83,7 +86,7 @@ ATFInline {
         = cdliSpecialUppercase | uppercaseConsonant | aleph
 
     elementalLowercaseConsonant
-        = cdliLowercaseConsonant | lowercaseConsonant | aleph
+        = cdliSpecialLowercase | lowercaseConsonant | aleph
 
     openBracket
         = "["
@@ -111,9 +114,9 @@ ATFInline {
         = (bracketedLowercaseConsonant? lowercaseVowel)+
         | (valueSymbolSolo nonValueSymbol)
 
-    plainUppercaseVaue
-        = (bracketedUppercaseConsonant? uppercaseVowel)+
-        | nonValueSymbol
+    plainUppercaseValue
+        = (bracketedUppercaseConsonant? uppercaseVowel)+ -- valueSymbol
+        | nonValueSymbol -- nonValueSymbol
     // End JTF transcribed simple values
 
 
@@ -148,6 +151,16 @@ ATFInline {
         = "{("
     documentGlossClosed
         = ")}"
+
+    // The close is the same as
+    // the determinative gloss close
+    scriptGlossOpen
+        = "{%" digit
+
+    determinativeGlossOpen
+        = "{"
+    determinativeGlossClosed
+        = "}"
         
     // The grapheme is present but must be
     // excised for the correct meaning
@@ -172,6 +185,75 @@ ATFInline {
     presenceNeededGlossClosed
         = ">"
     
+    inlineCommentOpen
+        = "(#"
+    inlineCommentClosed
+        = "#)"
 
+    // GDL Modifier Tokens
+    modifierToken
+        = "@v" -- variant
+        | "@c" -- curved
+        | "@f" -- flat
+        | "@g" -- gunu
+        | "@s" -- sheshig
+        | "@t" -- tenu
+        | "@n" -- nutillu
+        | "@z" -- zidatenu
+        | "@k" -- kabatenu
+        | "@r" -- verticallyReflected
+        | "@h" -- horizontallyReflected
+        | "@" digit+ -- rotated
+
+    // Allograph tokens
+    allographCharacter
+        = ~("x" | "X") (letter | digit)
+    allograph
+        = "~" allographCharacter+ -- custom
+        | "~t" -- token
+        | "~v" -- variant
+
+    // GDL Operators
+    operator
+        = "." -- beside
+        | "+" -- joining
+        | (timesChar | "x") -- containing
+        | "&" -- above
+        | "%" -- crossing
+        | "@" -- opposing
+        | "3" (timesChar | "x") -- repeatedThree
+        | "4" (timesChar | "x") -- repeatedFour
+        | ":" -- reversed // From JTF
+        | "/" -- alternative // From JTF
+
+    // Field Tokens
+    // See: http://oracc.ub.uni-muenchen.de/doc/help/editinginatf/lexicaltexts/index.html#h_fields
+    fieldTokens
+        = (",!sv" | "#") -- signValue // a sign value follows
+        | (",!pr" | "\"") -- pronunciation // a pronunciation follows
+        | (",!sg" | "~") -- sign // a sign follows
+        | (",!sn" | "|") -- ancientSignName // An ancient sign name follows
+        | (",!eq" | "=") -- equivalent // Column that follows is  a translation or synonym
+        | (",!wp" | "!wp" | "^") -- default // A word or phrase follows (is the default column type)
+
+    builtinSignListName
+        = "ABZ" digit+
+        | "BAU" digit+
+        | "HZL" digit+
+        | "KWU" digit+
+        | "LAK" digit+
+        | "MEA" digit+
+        | "MZL" digit+
+        | "REC" digit+
+        | "RSP" digit+
+        | "ZATU" digit+
+
+    genericSignListName
+        = (upper upper | upper) "SL" digit+
+
+    numericSignListName
+        = "N" digit+
+        
+        
 
 }
