@@ -369,19 +369,47 @@ ATFInline {
         | signValueWithModifier
         | signName
         | signValue
+        | glossedSignReading
+
+    glossedSignReading
+        = linguisticGlossOpen signReading linguisticGlossClosed -- linguistic
+        | documentGlossOpen signReading documentGlossClosed -- document
+        | afterBoundaryGlossOpen signReading afterBoundaryGlossClosed -- afterBoundary
+        | afterGraphemeGlossOpen signReading afterGraphemeGlossClosed -- afterGrapheme
+        | presenceExciseGlossOpen signReading presenceExciseGlossClosed -- presenceExcise
+        //| scriptGlossOpen signReading determinativeGlossClosed -- script
+        | determinativeGlossOpen signReading determinativeGlossClosed -- determinative
+        | presenceNeededGlossOpen signReading presenceNeededGlossClosed -- presenceNeeded
+        
 
     grapheme
         = signReading signSeparator grapheme -- complex
         | signReading signSeparator signReading -- dual
         | signReading -- single
+        | glossedGrapheme -- glossed
+
+    glossedGrapheme
+        = linguisticGlossOpen grapheme linguisticGlossClosed -- linguistic
+        | documentGlossOpen grapheme documentGlossClosed -- document
+        | afterBoundaryGlossOpen grapheme afterBoundaryGlossClosed -- afterBoundary
+        | afterGraphemeGlossOpen grapheme afterGraphemeGlossClosed -- afterGrapheme
+        | presenceExciseGlossOpen grapheme presenceExciseGlossClosed -- presenceExcise
+        //| scriptGlossOpen grapheme determinativeGlossClosed -- script
+        | determinativeGlossOpen grapheme determinativeGlossClosed -- determinative
+        | presenceNeededGlossOpen grapheme presenceNeededGlossClosed -- presenceNeeded
 
     unknownGrapheme
         = ~signSeparator nonWhitespace+
+
+    InlineComment
+        = inlineCommentOpen nonLineTerminator+ inlineCommentClosed
 
     Word
         = grapheme
         | shift
         | punctuation
+        | InlineComment
+        | unknownGrapheme
 
     Words
         = Word+
