@@ -1,4 +1,12 @@
 ATFInline {
+
+    lineTerminator
+        = "\r\n"
+        | "\n"
+
+    nonLineTerminator (a character that is not a newline)
+        = ~lineTerminator any
+
     lowercaseVowel
         = "a"
         | "e"
@@ -213,6 +221,15 @@ ATFInline {
         | "~t" -- token
         | "~v" -- variant
 
+    // Grapheme Flags, which appear at the
+    // end of signs or values, but not within
+    // compound signs (must appear after compound)
+    flag
+        = "!"
+        | "?"
+        | "*"
+        | "#"
+
     // GDL Operators
     operator
         = "." -- beside
@@ -249,11 +266,140 @@ ATFInline {
         | "ZATU" digit+
 
     genericSignListName
-        = (upper upper | upper) "SL" digit+
+        = upper upper? "SL" digit+
 
     numericSignListName
         = "N" digit+
-        
-        
+
+    signListName
+        = builtinSignListName
+        | numericSignListName
+        | genericSignListName
+
+    basicSignName
+        = "$"? "~"? uppercaseCharacter+ (digit+ | subscriptDigit+)? -- oracc
+        | "$"? "~" "_" uppercaseCharacter+ (digit+ | subscriptDigit+)? "_" -- cdli
+
+    signName
+        = signListName
+        | basicSignName
+
+    basicSignValue
+        = lowercaseCharacter+ (digit+ | subscriptDigit+)?
+
+    qualifiedSignValue
+        = basicSignValue ("x" | timesChar) "(" signName ")"
+
+    signValue
+        = qualifiedSignValue
+        | basicSignValue
+
+    signValueFlagged
+        = signValue flag+
+
+    signNameFlagged
+        = signName flag+
+        | qualifiedSignName flag+
+        | compoundSignName flag+
+
+    qualifiedSignName
+        = basicSignName "X" "(" signName ")"
+
+    repetitionSignValue
+        = digit+ "(" signValue ")" -- strict
+        | "n+" digit+ "(" signValue ")" -- damaged
+        | "n" digit+ "(" signValue ")" -- notDeterminable
+
+    repetitionSignName
+        = digit+ "(" signName ")" -- strict
+        | "N+" digit+ "(" signName ")" -- damaged
+        | "N" "(" signName ")" -- nonDeterminable
+
+    signNameWithModifier
+        = signName modifierToken+
+
+    signValueWithModifier
+        = signValue modifierToken+
+
+    groupedSignName
+        = "(" signName operator signName ")"
+
+    compoundSignName
+        = "|" signName operator signName "|"
+        | "|" groupedSignName operator signName "|"
+        | "|" signName operator groupedSignName "|"
+
+    punctuationSignName
+        = "P1" | "P2" | "P3" | "P4"
+
+    punctuation
+        = "/" "(" punctuationSignName ")" -- wordDividerQualified
+        | "*" "(" (signName | signValue) ")" -- bulletQualified
+        | "/" -- wordDivider
+        | "*" -- bullet
+        | ":'" -- twoWedgeColon
+        | ":\"" -- diagonalColon
+        | ":." -- tripleWedgeColon
+        | "::" -- unspecifiedColon
+        | ":" -- verticalColon
+
+    shift
+        = "%" lower+
+        | "%" lower
+        | "%" digit
+
+
+    // For our purposes, a single grapheme is anything
+    // joined by a hyphen, backslash, or a colon,
+    // according to the "Words" section of the ORACC
+    // primer.
+    signSeparator
+        = "-"
+        | "/"
+        | ":"
+
+    signReading
+        = signNameFlagged
+        | signValueFlagged
+        | compoundSignName
+        | repetitionSignName
+        | repetitionSignValue
+        | qualifiedSignName
+        | signNameWithModifier
+        | signValueWithModifier
+        | signName
+        | signValue
+
+    grapheme
+        = signReading signSeparator grapheme -- complex
+        | signReading signSeparator signReading -- dual
+        | signReading -- single
+
+    unknownGrapheme
+        = ~signSeparator nonWhitespace+
+
+    Word
+        = grapheme
+        | shift
+        | punctuation
+
+    Words
+        = Word+
+
+    // Basic whitespace and line termination handling.
+    // Note that we override the default Ohm definition
+    // of `space` to only be spaces or tabs, and NOT
+    // any of the newline characters
+    space := whitespace
+    whitespace
+      = "\t"
+      | "\x0B"    -- verticalTab
+      | "\x0C"    -- formFeed
+      | " "
+      | "\u00A0"  -- noBreakSpace
+      | "\uFEFF"  -- byteOrderMark
+
+    nonWhitespace
+     = ~whitespace ~lineTerminator any
 
 }
