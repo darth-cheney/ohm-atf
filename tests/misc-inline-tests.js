@@ -16,8 +16,8 @@ describe("Miscellaneous Inline Tests", () => {
         let match = inlineGrammar.match("2(u)?", "grapheme");
         assert.isTrue(match.succeeded());
     });
-    it("Should be able to parse [ur-{d}ba-ba6] as a known grapheme", () => {
-        let match = inlineGrammar.match("[ur-{d}ba-ba6]", "unknownGrapheme");
-        assert.isTrue(match.failed());
+    it("Should be able to parse [ur-{d}ba-ba6] as a missing grapheme", () => {
+        let match = inlineGrammar.match("[ur-{d}ba-ba6]", "missingGrapheme");
+        assert.isTrue(match.succeeded());
     });
 });

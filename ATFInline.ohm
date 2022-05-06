@@ -380,7 +380,8 @@ ATFInline {
         | afterGraphemeGlossOpen signReading afterGraphemeGlossClosed -- afterGrapheme
         | presenceExciseGlossOpen signReading presenceExciseGlossClosed -- presenceExcise
         //| scriptGlossOpen signReading determinativeGlossClosed -- script
-        | determinativeGlossOpen signReading determinativeGlossClosed -- determinative
+        //| determinativeGlossOpen signReading determinativeGlossClosed -- determinative
+        | determinative+ grapheme -- determinative
         | presenceNeededGlossOpen signReading presenceNeededGlossClosed -- presenceNeeded
         
 
@@ -389,6 +390,9 @@ ATFInline {
         | signReading signSeparator signReading -- dual
         | signReading -- single
         | glossedGrapheme -- glossed
+
+    determinative
+        = determinativeGlossOpen signReading determinativeGlossClosed
 
     glossedGrapheme
         = linguisticGlossOpen grapheme linguisticGlossClosed -- linguistic
