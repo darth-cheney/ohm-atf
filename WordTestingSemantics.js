@@ -27,7 +27,8 @@ const semantics = {
     unknownGrapheme: function(nonWhitespaceChars){
         return {
             type: 'UnknownGrapheme',
-            content: nonWhitespaceChars.sourceString
+            content: nonWhitespaceChars.sourceString,
+            source: nonWhitespaceChars.source
         };
     },
 

@@ -46,6 +46,7 @@ if(match.succeeded()){
             });
             unknowns.forEach(unknown => {
                 console.log(`Unknown grapheme ${unknown.content}`);
+                console.log(`Source: ${JSON.stringify(unknown.source, null, 4)}`);
                 console.log(`In line ${idx+1}: ${line.content}`);
             });
             //console.log(JSON.stringify(innerResult, null, 4));

@@ -283,6 +283,10 @@ ATFInline {
     signName
         = signListName
         | basicSignName
+        | compoundSignName
+
+    unreadableSignValue
+        = "x"
 
     basicSignValue
         = lowercaseCharacter+ (digit+ | subscriptDigit+)?
@@ -293,6 +297,7 @@ ATFInline {
     signValue
         = qualifiedSignValue
         | basicSignValue
+        | unreadableSignValue
 
     signValueFlagged
         = signValue flag+
@@ -309,11 +314,13 @@ ATFInline {
 
     repetitionSignValue
         = digit+ "(" (signValueWithModifier | signValueFlagged | signValue) ")" -- strict
+        | fraction "(" (signValueWithModifier | signValueFlagged | signValue) ")" -- fraction
         | "n+" digit+ "(" (signValueWithModifier | signValueFlagged | signValue) ")" -- damaged
         | "n" digit+ "(" (signValueWithModifier | signValueFlagged | signValue) ")" -- notDeterminable
 
     repetitionSignName
         = digit+ "(" signName ")" -- strict
+        | fraction "(" signName ")" -- fraction
         | "N+" digit+ "(" signName ")" -- damaged
         | "N" "(" signName ")" -- nonDeterminable
 
