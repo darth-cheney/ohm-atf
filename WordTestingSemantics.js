@@ -38,6 +38,14 @@ const semantics = {
         };
     },
 
+    missingGrapheme: function(grapheme){
+        return {
+            type: 'missingGrapheme',
+            content: this.sourceString,
+            innerContent: grapheme.sourceString
+        };
+    },
+
     grapheme_complex: function(signReading, signSep, grapheme){
         return {
             type: 'grapheme',

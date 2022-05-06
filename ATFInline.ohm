@@ -278,7 +278,7 @@ ATFInline {
 
     basicSignName
         = "$"? "~"? uppercaseCharacter+ (digit+ | subscriptDigit+)? -- oracc
-        | "$"? "~" "_" uppercaseCharacter+ (digit+ | subscriptDigit+)? "_" -- cdli
+        | "$"? "~"? "_" lowercaseCharacter+ (digit+ | subscriptDigit+)? "_" -- cdli
 
     signName
         = signListName
@@ -296,19 +296,21 @@ ATFInline {
 
     signValueFlagged
         = signValue flag+
+        | repetitionSignValue flag+
 
     signNameFlagged
         = signName flag+
         | qualifiedSignName flag+
         | compoundSignName flag+
+        | repetitionSignName flag+
 
     qualifiedSignName
         = basicSignName "X" "(" signName ")"
 
     repetitionSignValue
-        = digit+ "(" signValue ")" -- strict
-        | "n+" digit+ "(" signValue ")" -- damaged
-        | "n" digit+ "(" signValue ")" -- notDeterminable
+        = digit+ "(" (signValueWithModifier | signValueFlagged | signValue) ")" -- strict
+        | "n+" digit+ "(" (signValueWithModifier | signValueFlagged | signValue) ")" -- damaged
+        | "n" digit+ "(" (signValueWithModifier | signValueFlagged | signValue) ")" -- notDeterminable
 
     repetitionSignName
         = digit+ "(" signName ")" -- strict
@@ -398,6 +400,10 @@ ATFInline {
         | determinativeGlossOpen grapheme determinativeGlossClosed -- determinative
         | presenceNeededGlossOpen grapheme presenceNeededGlossClosed -- presenceNeeded
 
+    missingGrapheme
+        = "[" grapheme "]" -- known
+        | "[...]" -- unknown
+
     unknownGrapheme
         = ~signSeparator nonWhitespace+
 
@@ -406,6 +412,7 @@ ATFInline {
 
     Word
         = grapheme
+        | missingGrapheme
         | shift
         | punctuation
         | InlineComment
