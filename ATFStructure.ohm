@@ -262,16 +262,22 @@ AtLine
 TextLine
     = #(textLineBeginning+ "." space) nonLineTerminator+ lineTerminator
 
+UnknownLine
+    = nonLineTerminator+ lineTerminator
+
 Line (any kind of Line)
     = AmpLine
     | AtLine
     | DollarLine
     | TextLine
+    | UnknownLine
     | lineTerminator
 
-Lines (a collection of one or more lines)
-    = Line Line --multiLine
-    | Line --singleLine
+// Lines (a collection of one or more lines)
+//     = Line Line --multiLine
+//     | Line --singleLine
+
+Lines = Line+
 
 Document (an ATF document)
     = Line+ end
