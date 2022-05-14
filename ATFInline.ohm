@@ -245,7 +245,7 @@ ATFInline {
 
     // Field Tokens
     // See: http://oracc.ub.uni-muenchen.de/doc/help/editinginatf/lexicaltexts/index.html#h_fields
-    fieldTokens
+    fieldToken
         = (",!sv" | "#") -- signValue // a sign value follows
         | (",!pr" | "\"") -- pronunciation // a pronunciation follows
         | (",!sg" | "~") -- sign // a sign follows
@@ -282,6 +282,8 @@ ATFInline {
 
     signName
         = signListName
+        | basicSignNameWithAllograph
+        | signNameWithModifier
         | basicSignName
         | compoundSignName
 
@@ -293,9 +295,12 @@ ATFInline {
 
     qualifiedSignValue
         = basicSignValue ("x" | timesChar) "(" signName ")"
+        | basicSignValue flag+ "(" signName ")" // (See ORACC primer "other flags")
 
     signValue
         = qualifiedSignValue
+        | basicSignValueWithAllograph
+        | signValueWithModifier
         | basicSignValue
         | unreadableSignValue
 
@@ -308,6 +313,12 @@ ATFInline {
         | qualifiedSignName flag+
         | compoundSignName flag+
         | repetitionSignName flag+
+
+    basicSignValueWithAllograph
+        = basicSignValue allograph
+
+    basicSignNameWithAllograph
+        = basicSignName allograph
 
     qualifiedSignName
         = basicSignName "X" "(" signName ")"
@@ -340,6 +351,17 @@ ATFInline {
 
     punctuationSignName
         = "P1" | "P2" | "P3" | "P4"
+
+    // NOTE: CDLI sign name logograms, unlike ORACC ATF
+    // logograms, are lowercase and between underscores.
+    // This makes the individual elements equal to
+    // signValues (lowercase) in this grammar
+    logogramInnerCDLI
+        = signValue -- single
+        | signValue signSeparator logogramInnerCDLI -- multiple
+
+    logogramCDLI
+        = "_" logogramInnerCDLI "_"
 
     punctuation
         = "/" "(" punctuationSignName ")" -- wordDividerQualified
@@ -379,6 +401,7 @@ ATFInline {
         | signName
         | signValue
         | glossedSignReading
+        | logogramCDLI
 
     glossedSignReading
         = linguisticGlossOpen signReading linguisticGlossClosed -- linguistic
@@ -427,7 +450,10 @@ ATFInline {
         | shift
         | punctuation
         | InlineComment
+        | fieldToken
         | unknownGrapheme
+
+    
 
     Words
         = Word+
