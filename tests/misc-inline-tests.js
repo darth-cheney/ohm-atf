@@ -32,6 +32,14 @@ describe("Miscellaneous Inline Tests", () => {
         let match = inlineGrammar.match("sila3-ta!(DUG)", "grapheme");
         assert.isTrue(match.succeeded());
     });
+    it("Should be able to parse |BAD3.AN|{ki}-sze3", () => {
+        let match = inlineGrammar.match("|BAD3.AN|{ki}-sze3", "Word");
+        assert.isTrue(match.succeeded());
+    });
+    it("Should be able to parse uri5{ki}-ma", () => {
+        let match = inlineGrammar.match("uri5{ki}-ma", "Word");
+        assert.isTrue(match.succeeded());
+    });
     describe("Missing Word/Grapheme Cases", () => {
         it.skip("Should be able to parse [dumu lu2-{d}szara2]", () => {
             let match = inlineGrammar.match("[dumu lu2-{d}szara2]", "missingGrapheme");

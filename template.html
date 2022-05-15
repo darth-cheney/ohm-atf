@@ -4,6 +4,22 @@
         <title>CDLI Highlighter (${PCODE})</title>
     </head>
     <body>
+        <style>
+         p {
+             font-family: monospace;
+             font-size: 1.2rem;
+         }
+         p[data-line-type]:not([data-line-type="TextLine"]){
+             color: rgba(50, 50, 50, 0.5);
+         }
+         p[data-line-type="TextLine"]{
+             color: color black;
+         }
+
+         .unknown {
+             color: red;
+         }
+        </style>
         <main>
             ${LINES}
         </main>

@@ -3,10 +3,15 @@
 import fs from "fs";
 import ohm from "ohm-js";
 import lineHTMLSemantics from "./LineHTMLSemantics.js";
-//import inlineHTMLSemantics from "./InlineHTMLSemantics";
+import lineTypeSemantics from "./LineTestingSemantics.js";
+import inlineHTMLSemantics from "./WordHTMLSemantics.js";
 const structureGrammar = ohm.grammar(fs.readFileSync("ATFStructure.ohm"));
+const inlineGrammar = ohm.grammar(fs.readFileSync("ATFInline.ohm"));
 const lineSemantics = structureGrammar.createSemantics();
+const inlineSemantics = inlineGrammar.createSemantics();
 lineSemantics.addOperation("toHTML", lineHTMLSemantics);
+lineSemantics.addOperation("lineType", lineTypeSemantics);
+inlineSemantics.addOperation("toHTML", inlineHTMLSemantics);
 
 const template = fs.readFileSync("template.html").toString();
 
@@ -16,7 +21,22 @@ const renderHTML = (atfText) => {
         throw `Could not parse Lines in this ATF document!`;
         process.exit(-1);
     }
-    let innerHTML = lineSemantics(match).toHTML();
+    let lineTypes = lineSemantics(match).lineType();
+    let innerHTML = lineTypes.map(line => {
+        let open = `<p data-line-type="${line.type}">`;
+        let close = `</p>`;
+        if(line.type !== "TextLine"){
+            return `${open}${line.content}${close}`;
+        } else {
+            let textLineMatch = inlineGrammar.match(line.innerContent, "Words");
+            if(textLineMatch.failed()){
+                throw new Error(`Match failed in TextLine: ${line.innerContent}`);
+                process.exit(-1);
+            }
+            let textLineHTML = inlineSemantics(textLineMatch).toHTML();
+            return `${open}${textLineHTML}${close}`;
+        }
+    }).join("\n");
     let html = template.replace("${LINES}", innerHTML);
     return html;
 };
