@@ -23,9 +23,26 @@ const semantics = {
     TextLine: function(beginning, dot, space, content, lineTerminator){
         return {
             type: 'TextLine',
+            isContinued: true,
             content: `${beginning.sourceString}. ${content.sourceString}\n`,
             innerContent: content.sourceString.trim()
         };
+    },
+
+    ContinuedTextLine: function(content, lineTerminator){
+        return {
+            type: 'TextLine',
+            isContinued: true,
+            content: content.sourceString,
+            innerContent: content.sourceString.trim()
+        };
+    },
+
+    TextLines: function(textLine, continuedTextLines){
+        return [
+            textLine.lineType(),
+            ...continuedTextLines.lineType()
+        ];
     },
 
     UnknownLine: function(content, lineTerminator){

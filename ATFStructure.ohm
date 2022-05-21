@@ -148,35 +148,39 @@ textLineBeginning (the beginning of an ATF text line)
     = ~space ~"." any
 
 
+lineTerminatorOrEnd
+    = lineTerminator
+    | end
+
 
 
 // Semantic Rules
 
 // Hash Lines
 TranslationProtocolLine
-    = #(hash "tr." letter+ ":" space+) nonLineTerminator* lineTerminator
+    = #(hash "tr." letter+ ":" space+) nonLineTerminator* lineTerminatorOrEnd
 
 BasketProtocolLine (a basket protocol line)
-    = #("#basket: ") nonLineTerminator+ lineTerminator
+    = #("#basket: ") nonLineTerminator+ lineTerminatorOrEnd
 
 ATFProtocolLine (an ATF protocol line for introducing directives)
-    = #("#atf: ") "lang" atfProtocolLanguage lineTerminator //--atfLangDirective
-    | #("#atf: ") "use" atfFeature lineTerminator //--atfFeatureDirective
+    = #("#atf: ") "lang" atfProtocolLanguage lineTerminatorOrEnd //--atfLangDirective
+    | #("#atf: ") "use" atfFeature lineTerminatorOrEnd //--atfFeatureDirective
 
 BibProtocolLine (a bibliographic protocol hash line)
-    = #("#bib: ") nonLineTerminator+ lineTerminator
+    = #("#bib: ") nonLineTerminator+ lineTerminatorOrEnd
 
 LemLineProtocolLine (a lemmatization for the previous line)
-    = #("#lem: ") nonLineTerminator+ lineTerminator
+    = #("#lem: ") nonLineTerminator+ lineTerminatorOrEnd
 
 LemmatizerProtocolLine (introduces directives to the lemmatization subsystem)
-    = #("#lemmatizer: ") nonLineTerminator+ lineTerminator
+    = #("#lemmatizer: ") nonLineTerminator+ lineTerminatorOrEnd
 
 LinkProtocolLine (a directive to the linkage subsystem)
-    = #("#link: def ") nonLineTerminator+ lineTerminator
+    = #("#link: def ") nonLineTerminator+ lineTerminatorOrEnd
 
 NoteProtocolLine (a note that will be included in rendered ATF text)
-    = #("#note: ") nonLineTerminator+ lineTerminator
+    = #("#note: ") nonLineTerminator+ lineTerminatorOrEnd
 
 HashOuterProtocolLine (a protocol line that may appear at the very beginning of a document)
     = BasketProtocolLine
@@ -201,7 +205,7 @@ HashInterProtocolLine (a protocol line that may appear between lines of text)
 // todo: add var:, version:, and syntax:
 
 HashCommentLine (a hash line comment line)
-    = #( hash (~atfProtocolToken nonLineTerminator)+) lineTerminator
+    = #( hash (~atfProtocolToken nonLineTerminator)+) lineTerminatorOrEnd
 
 HashLine
     = HashOuterProtocolLine
@@ -211,38 +215,38 @@ HashLine
     | HashCommentLine
 
 AmpLine (an Amp Line)
-    = #(amp pCode) "=" nonLineTerminator+ lineTerminator
+    = #(amp pCode) "=" nonLineTerminator+ lineTerminatorOrEnd
 
 AtObjectLine (an At Line, representing an object, such as a tablet or bulla)
-    = #(at atObject) lineTerminator
+    = #(at atObject) lineTerminatorOrEnd
 
 AtSurfaceLine (an At Line, representing a given surface of an object, such as reverse, top, etc)
-    = #(at atObjectSurface) lineTerminator
+    = #(at atObjectSurface) lineTerminatorOrEnd
 
 AtHeadingLine (an At Line, representing a heading like h3 etc)
-    = #(at atObjectHeading) lineTerminator
+    = #(at atObjectHeading) lineTerminatorOrEnd
 
 AtDivisionLine (an At Line representing some division of the document)
-    = #(at "m=" letter+) (letter+ digit+)? lineTerminator
+    = #(at "m=" letter+) (letter+ digit+)? lineTerminatorOrEnd
 
 AtDiscourseLine (an At Line representing a shorthand discursive division, like colophon etc)
-    = #(at discourseShortcut) lineTerminator
+    = #(at discourseShortcut) lineTerminatorOrEnd
 
 AtMilestoneLine (an At Line representing a Division or Discourse specification)
     = AtDivisionLine
     | AtDiscourseLine
 
 AtColumnLine (An At Line indicating the column number being transliterated)
-    = #(at "column" space+) integer lineTerminator
+    = #(at "column" space+) integer lineTerminatorOrEnd
 
 DollarLineStrict (a Dollar Line following the "strict" conventions describing its state)
-    = #(dollar space+) dollarQualification? dollarExtent? dollarScope? dollarState nonLineTerminator* lineTerminator
+    = #(dollar space+) dollarQualification? dollarExtent? dollarScope? dollarState nonLineTerminator* lineTerminatorOrEnd
 
 DollarSealLine (a Dollar Line referring to a specified seal number)
-    = #(dollar space+) "seal" integer lineTerminator
+    = #(dollar space+) "seal" integer lineTerminatorOrEnd
 
 DollarRulingLine
-    = #(dollar space+) dollarRuling "ruling" lineTerminator
+    = #(dollar space+) dollarRuling "ruling" lineTerminatorOrEnd
 
 DollarLineLoose
     = #(dollar space+) "(" ~")" nonLineTerminator+ ")"
@@ -260,22 +264,27 @@ AtLine
     | AtColumnLine
 
 TextLine
-    = #(textLineBeginning+ "." space) nonLineTerminator+ lineTerminator
+    = #(textLineBeginning+ "." space) nonLineTerminator+ lineTerminatorOrEnd
+
+ContinuedTextLine
+    = ~AtLine ~DollarLine ~AmpLine ~HashLine nonLineTerminator+ lineTerminatorOrEnd
+
+TextLines
+    = TextLine ContinuedTextLine+
 
 UnknownLine
-    = nonLineTerminator+ lineTerminator
+    = nonLineTerminator+ lineTerminatorOrEnd
 
 Line (any kind of Line)
     = AmpLine
+    | HashLine
     | AtLine
     | DollarLine
+    | TextLines
     | TextLine
     | UnknownLine
     | lineTerminator
 
-// Lines (a collection of one or more lines)
-//     = Line Line --multiLine
-//     | Line --singleLine
 
 Lines = Line+
 
