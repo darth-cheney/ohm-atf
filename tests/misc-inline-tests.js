@@ -41,8 +41,8 @@ describe("Miscellaneous Inline Tests", () => {
         assert.isTrue(match.succeeded());
     });
     describe("Missing Word/Grapheme Cases", () => {
-        it.skip("Should be able to parse [dumu lu2-{d}szara2]", () => {
-            let match = inlineGrammar.match("[dumu lu2-{d}szara2]", "missingGrapheme");
+        it("Should be able to parse [dumu lu2-{d}szara2] as multiple Words", () => {
+            let match = inlineGrammar.match("[dumu lu2-{d}szara2]", "Words");
             assert.isTrue(match.succeeded());
         });
         // Other examples
@@ -57,13 +57,13 @@ describe("Miscellaneous Inline Tests", () => {
         });
     });
 
-    describe.skip("CDLI logograms", () => {
-        it("Should parse _a mu-ru_ as grapheme", () => {
-            let match = inlineGrammar.match("_a mu-ru_", "grapheme");
+    describe("CDLI logograms", () => {
+        it("Should parse _a mu-ru_ as a Word", () => {
+            let match = inlineGrammar.match("_a mu-ru_", "Word");
             assert.isTrue(match.succeeded());
         });
-        it("Should parse _a mu-ru_ as logogramCDLI", () => {
-            let match = inlineGrammar.match("_a mu-ru_", "logogramCDLI");
+        it("Should parse _a mu-ru_ as LogogramCDLI", () => {
+            let match = inlineGrammar.match("_a mu-ru_", "LogogramCDLI");
             assert.isTrue(match.succeeded());
         });
     });

@@ -352,17 +352,6 @@ ATFInline {
     punctuationSignName
         = "P1" | "P2" | "P3" | "P4"
 
-    // NOTE: CDLI sign name logograms, unlike ORACC ATF
-    // logograms, are lowercase and between underscores.
-    // This makes the individual elements equal to
-    // signValues (lowercase) in this grammar
-    logogramInnerCDLI
-        = signValue -- single
-        | signValue signSeparator logogramInnerCDLI -- multiple
-
-    logogramCDLI
-        = "_" logogramInnerCDLI "_"
-
     punctuation
         = "/" "(" punctuationSignName ")" -- wordDividerQualified
         | "*" "(" (signName | signValue) ")" -- bulletQualified
@@ -403,7 +392,6 @@ ATFInline {
         | signName
         | signValue
         | glossedSignReading
-        | logogramCDLI
 
     glossedSignReading
         = linguisticGlossOpen signReading linguisticGlossClosed -- linguistic
@@ -447,8 +435,12 @@ ATFInline {
     InlineComment
         = inlineCommentOpen nonLineTerminator+ inlineCommentClosed
 
+    LogogramCDLI
+        = #("_") (grapheme | ~"_" unknownGrapheme)+ #("_")
+
     Word
         = grapheme
+        | LogogramCDLI 
         | missingGrapheme
         | shift
         | punctuation
