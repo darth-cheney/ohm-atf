@@ -390,7 +390,9 @@ ATFInline {
         | ":"
 
     signReading
-        = signNameFlagged
+        = determinative+ signReading -- withDeterminativePrefix
+        | signReading determinative+ -- withDeterminativeSuffix
+        | signNameFlagged
         | signValueFlagged
         | compoundSignName
         | repetitionSignName
@@ -411,7 +413,8 @@ ATFInline {
         | presenceExciseGlossOpen signReading presenceExciseGlossClosed -- presenceExcise
         //| scriptGlossOpen signReading determinativeGlossClosed -- script
         //| determinativeGlossOpen signReading determinativeGlossClosed -- determinative
-        | determinative+ grapheme -- determinative
+        //| determinative+ grapheme -- determinativePrefix
+        //| grapheme determinative+ -- determinativeSuffix
         | presenceNeededGlossOpen signReading presenceNeededGlossClosed -- presenceNeeded
         
 
@@ -470,6 +473,8 @@ ATFInline {
       | " "
       | "\u00A0"  -- noBreakSpace
       | "\uFEFF"  -- byteOrderMark
+      | "["
+      | "]"
 
     nonWhitespace
      = ~whitespace ~lineTerminator any
