@@ -38,11 +38,18 @@ const semantics = {
         };
     },
 
-    TextLines: function(textLine, continuedTextLines){
-        return [
-            textLine.lineType(),
-            ...continuedTextLines.lineType()
-        ];
+    TextLines: function(textLine, continuationLines){
+        return {
+            type: 'TextLines',
+            content: this.sourceString
+        };
+    },
+    
+    HashLine: function(aHashLine){
+        return {
+            type: 'HashLine',
+            content: aHashLine.sourceString
+        };
     },
 
     UnknownLine: function(content, lineTerminator){
@@ -76,6 +83,7 @@ const semantics = {
     },
 
     _terminal: function(){
+        return this.sourceString;
     }
 };
 

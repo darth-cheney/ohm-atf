@@ -267,7 +267,7 @@ TextLine
     = #(textLineBeginning+ "." space) nonLineTerminator+ lineTerminatorOrEnd
 
 ContinuedTextLine
-    = ~AtLine ~DollarLine ~AmpLine ~HashLine nonLineTerminator+ lineTerminatorOrEnd
+    = ~AtLine ~DollarLine ~AmpLine ~HashLine ~TextLine nonLineTerminator+ lineTerminatorOrEnd
 
 TextLines
     = TextLine ContinuedTextLine+
