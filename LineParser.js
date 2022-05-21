@@ -23,6 +23,7 @@ class ATFLineParser extends Object {
     }
 
     parse(aString){
+        this.reset();
         this.source = aString;
         let match = grammar.match(this.source, "Lines");
         if(match.failed()){
