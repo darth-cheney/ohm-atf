@@ -20,6 +20,22 @@ const semantics = {
         return `<p class="text-line"><span class="line-prefix">${beginning.sourceString}</span>. <span class="line-content">${content.sourceString}</span></p>`;
     },
 
+    ContinuedTextLine: function(nonLineTerminator, lineTerminator){
+        return `<p class="text-line continued-text-line">${this.sourceString}</p>`;
+    },
+
+    TextLines: function(textLine, continuedLines){
+        let result = textLine.toHTML() + "\n";
+        result += continuedLines.children.map(child => {
+            return child.toHTML();
+        }).join('\n');
+        return result;
+    },
+
+    HashLine: function(aHashLine){
+        return `<p class="hash-line">${this.sourceString}</span>`;
+    },
+
     UnknownLine: function(content, lineTerminator){
         return `<p class="unknown-line">${this.sourceString}</p>`;
     },

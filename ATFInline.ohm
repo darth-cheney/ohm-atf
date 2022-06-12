@@ -430,7 +430,8 @@ ATFInline {
         | "[...]" -- unknown
 
     unknownGrapheme
-        = ~signSeparator nonWhitespace+
+        //= ~signSeparator nonWhitespace+
+        = nonWhitespace+
 
     InlineComment
         = inlineCommentOpen nonLineTerminator+ inlineCommentClosed
@@ -455,7 +456,7 @@ ATFInline {
 
     // Basic whitespace and line termination handling.
     // Note that we override the default Ohm definition
-    // of `space` to only be spaces or tabs, and NOT
+    // of <space> to only be spaces or tabs, and NOT
     // any of the newline characters
     space := whitespace
     whitespace
